@@ -1,9 +1,10 @@
 import React from 'react'
+import Friendslist from './CommonComponent/Friendslist'
 
 const Message = () => {
   return (
     <div>
-      message
+      <Friendslist/>
     </div>
   )
 }

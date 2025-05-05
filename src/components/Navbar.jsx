@@ -42,7 +42,9 @@ const auth = getAuth()
                     </picture>
                 </div>
             </div>
+            <div className='bg-gray-200'>
             <Outlet />
+            </div>
         </div>
     );
 };

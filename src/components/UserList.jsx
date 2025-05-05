@@ -1,5 +1,6 @@
 import { getAuth } from 'firebase/auth';
 import { getDatabase, onValue, push, ref, set } from 'firebase/database';
+import moment from 'moment';
 import React, { useEffect, useState } from 'react'
 
 const UserList = () => {
@@ -24,9 +25,8 @@ const UserList = () => {
 
   // handleRequestsent implement
   const handleRequestsent = (sentFrdata) => {
-    console.log(sentFrdata);
     // console.log(auth.currentUser);
-    
+
     const userdb = ref(db, 'friendRequest/')
     set(push(userdb), {
       senderData: {
@@ -40,7 +40,8 @@ const UserList = () => {
         email: sentFrdata?.email,
         profileImage: sentFrdata?.profile_picture,
         uid: sentFrdata?.userid
-      }
+      },
+      createdAt: moment().format('MMMM Do YYYY, h:mm:ss a')
 
     });
 
