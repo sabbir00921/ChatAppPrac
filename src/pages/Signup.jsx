@@ -1,10 +1,16 @@
 import React, { useState } from 'react'
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { getDatabase, push, ref, set} from "firebase/database";
+import { useNavigate } from 'react-router-dom';
 
 const Signup = () => {
     const auth = getAuth();
+    const db = getDatabase();
+    const navigate = useNavigate();
+
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
+    const [name, setName] = useState("")
 
     const data = [
         {
@@ -12,8 +18,12 @@ const Signup = () => {
             id: 1
         },
         {
-            name: "password",
+            name: "name",
             id: 2
+        },
+        {
+            name: "password",
+            id: 3
         },
     ]
 
@@ -23,12 +33,16 @@ const Signup = () => {
         if (name == "email") {
             setEmail(value)
         }
+        else if (name == "name") {
+            setName(value)
+        }
         else {
             setPassword(value)
         }
 
 
     }
+    console.log(name);
 
     //check given info
     const submitData = () => {
@@ -36,18 +50,35 @@ const Signup = () => {
             .then((user) => {
                 console.log(user);
 
+            }).then(() => {
+                updateProfile(auth.currentUser, {
+                    displayName: name,
+                    photoURL: "https://img.freepik.com/premium-vector/male-avatar-flat-icon-design-vector-illustration_549488-103.jpg"
+                })
+            }).then(() => {
+                const userdb = ref(db, 'users/')
+                set(push(userdb), {
+                    userid: auth.currentUser.uid,
+                    username: name,
+                    email: email,
+                    profile_picture: "Empty"
+                });
+                navigate("/login")
+            })
+            .catch((err) => {
+                console.log(err, "signup Error");
+
             })
     }
     // handlesignup implementation
     const handlesignup = (e) => {
         e.preventDefault();
-        console.log(email, password);
         submitData()
 
     }
     // submitenter by enter
     const submitenter = (e) => {
-        console.log(e.key)
+        e.preventDefault();
         if (e.key == Enter) {
             submitData()
         }
@@ -62,13 +93,13 @@ const Signup = () => {
                     <div>
                         {data.map((item) => (
                             <div key={item.id} className='mb-4'>
-                                <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                                <label htmlFor={item.name} className="block text-sm font-medium text-gray-700">
                                     {item.name}
                                 </label>
                                 <input
                                     onChange={handleinput}
                                     type={item.name}
-                                    id="email"
+                                    id={item.id}
                                     name={item.name}
                                     required
                                     className="mt-1 block w-full px-4 py-2 border rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500"
@@ -82,7 +113,7 @@ const Signup = () => {
                         onClick={handlesignup}
                         onKeyDown={submitenter}
                         type="submit"
-                        className="w-full bg-blue-600 text-white py-2 rounded-xl hover:bg-blue-700 transition"
+                        className="w-full bg-blue-600 text-white py-2 rounded-xl hover:bg-blue-700 transition cursor-pointer"
                     >
                         Sign Up
                     </button>
