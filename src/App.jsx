@@ -1,5 +1,4 @@
 import database from "../database/firebase.config"
-import React, { Profiler } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import Signup from "./pages/Signup"
 import Login from "./pages/Login/Login"
@@ -9,6 +8,7 @@ import Profile from "./components/Profile"
 import UserList from "./components/UserList"
 
 const App = () => {
+
   return (
     <BrowserRouter>
       <Routes>

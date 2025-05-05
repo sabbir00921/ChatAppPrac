@@ -2,31 +2,44 @@ import React, { useEffect, useState } from 'react';
 import { Link, Outlet } from 'react-router-dom';
 import { getAuth } from "firebase/auth";
 import { getDatabase, onValue, ref } from 'firebase/database';
+import { useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
-const auth = getAuth()
+    const auth = getAuth()
     const db = getDatabase();
+    const navigate = useNavigate();
 
     const [userList, setuserList] = useState({})
+
+    useEffect(() => {
+        if (auth?.currentUser?.email === "") {
+            navigate("/signup")
+        }
+        else {
+            navigate("/profile")
+        }
+
+    }, [])
+
 
     useEffect(() => {
         const userlist = ref(db, 'users');
         onValue(userlist, (snapshot) => {
             let useListblankArr = {}
             snapshot.forEach((user) => {
-                if(auth.currentUser.uid === user.val().userid)
-                useListblankArr = { ...user.val(), userKey: user.key }
+                if (auth.currentUser.uid === user.val().userid)
+                    useListblankArr = { ...user.val(), userKey: user.key }
             })
             setuserList(useListblankArr)
         });
     }, [])
-// console.log(userList);
+    // console.log(userList);
 
     return (
         <div className='flex flex-col'>
             <div className='flex bg-gray-500 p-3 text-white font-bold justify-around items-center gap-3'>
                 <div>
-                    <h1>{userList?.username || auth?.currentUser?.displayName ||"Name"}</h1>
+                    <h1>{userList?.username || auth?.currentUser?.displayName || "Name"}</h1>
                 </div>
                 <div className='flex p-3 gap-3'>
                     <Link to="/profile">Profile</Link>
@@ -43,7 +56,7 @@ const auth = getAuth()
                 </div>
             </div>
             <div className='bg-gray-200'>
-            <Outlet />
+                <Outlet />
             </div>
         </div>
     );

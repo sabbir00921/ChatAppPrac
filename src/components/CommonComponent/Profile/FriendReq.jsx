@@ -21,7 +21,8 @@ const FriendReq = () => {
             setfrReqList(frReqListblankArr)
         });
     }, [])
-    // console.log(frReqList);
+
+
     //handleAccept
     const handleAccept = (acceptData) => {
         const friendListdb = ref(db, 'friendList/')
@@ -43,7 +44,7 @@ const FriendReq = () => {
         }).then(() => {
             const delReq = ref(db, `friendRequest/${acceptData.userKey}`); // to delete user from DB.
             remove(delReq);
-            console.log(acceptData);
+            // console.log(acceptData);
         })
 
 
@@ -91,6 +92,7 @@ const FriendReq = () => {
                                         </div>
                                     </div>
                                 </li>
+
                             ))
                         }
                     </ul>

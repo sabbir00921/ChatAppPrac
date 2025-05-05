@@ -1,5 +1,5 @@
 import { getAuth } from 'firebase/auth';
-import { getDatabase, onValue, ref } from 'firebase/database';
+import { getDatabase, onValue, ref, remove } from 'firebase/database';
 import React, { useEffect, useState } from 'react'
 
 
@@ -23,10 +23,14 @@ const Friendslist = () => {
             setfriendList(friendListblankArr)
         });
     }, [])
-    console.log(friendList);
+    // console.log(friendList);
+    // handleUnfriend
 
+    const handleUnfriend = (friendData) => {
+        const delfrnd = ref(db, `friendList/${friendData.userKey}`); // to delete user from DB.
+        remove(delfrnd);
+    }
 
-    let list = 10
     return (
         <div className='w-1/3'>
             <div class="w-full max-w-md p-4 bg-white border border-gray-200 rounded-lg shadow-sm sm:p-8 dark:bg-gray-800 dark:border-gray-700">
@@ -47,14 +51,14 @@ const Friendslist = () => {
                                         </div>
                                         <div class="flex-1 min-w-0 ms-4">
                                             <p class="text-sm font-medium text-gray-900 truncate dark:text-white">
-                                                {auth.currentUser.uid ==singleFrnd?.reciverData?.uid ? singleFrnd?.senderData?.name :singleFrnd?.reciverData?.name}
+                                                {auth.currentUser.uid == singleFrnd?.reciverData?.uid ? singleFrnd?.senderData?.name : singleFrnd?.reciverData?.name}
                                             </p>
                                             <p class="text-sm text-gray-500 truncate dark:text-gray-400">
                                                 {singleFrnd?.createdAt}
                                             </p>
                                         </div>
                                         <div className=' gap-y-1'>
-                                            <button type="button" className="text-white bg-blue-500 hover:bg-blue-600 font-medium rounded-sm text-sm w-[60px] py-1 text-center me-2 cursor-pointer">Unfriend</button>
+                                            <button type="button" onClick={() => handleUnfriend(singleFrnd)} className="text-white bg-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br  font-medium rounded-lg text-sm w-[100px] py-2 text-center me-2 cursor-pointer">Unfriend</button>
 
                                         </div>
                                     </div>
